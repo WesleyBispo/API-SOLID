@@ -15,17 +15,7 @@ module.exports = {
   },
   plugins: ['@typescript-eslint'],
   rules: {
-    'prettier/prettier': [
-      'error',
-      {
-        printWidth: 80,
-        tabWidth: 2,
-        singleQuote: true,
-        trailingComma: 'all',
-        arrowParens: 'always',
-        semi: false,
-      },
-    ],
+    camelcase: 'off',
   },
   settings: {
     'import/parsers': {
