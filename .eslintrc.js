@@ -16,6 +16,7 @@ module.exports = {
   plugins: ['@typescript-eslint'],
   rules: {
     camelcase: 'off',
+    'no-useless-constructor': 'off',
   },
   settings: {
     'import/parsers': {
