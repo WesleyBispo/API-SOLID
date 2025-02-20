@@ -20,6 +20,9 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     return checkIn
   }
 
+  async countByUserId(userId: string): Promise<number> {
+    return this.items.filter((checkIn) => checkIn.user_id === userId).length
+  }
   async findManyByUserId(userId: string, page: number): Promise<CheckIn[]> {
     const skip = (page - 1) * 20
     const take = skip + 20
