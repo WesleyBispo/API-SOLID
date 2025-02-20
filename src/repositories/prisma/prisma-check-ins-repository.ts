@@ -8,4 +8,20 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       data: data,
     })
   }
+
+  async findByUserIdOnDate(
+    userId: string,
+    date: Date,
+  ): Promise<CheckIn | null> {
+    const checkIn = await prisma.checkIn.findFirst({
+      where: {
+        user_id: userId,
+        created_at: {
+          gte: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+        },
+      },
+    })
+
+    return checkIn
+  }
 }
