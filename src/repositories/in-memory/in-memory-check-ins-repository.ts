@@ -4,7 +4,7 @@ import { randomUUID } from 'node:crypto'
 import dayjs from 'dayjs'
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
-  private items: CheckIn[] = []
+  private checkIns: CheckIn[] = []
 
   async create(data: Prisma.CheckInUncheckedCreateInput): Promise<CheckIn> {
     const checkIn: CheckIn = {
@@ -15,18 +15,35 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
       created_at: new Date(),
     }
 
-    this.items.push(checkIn)
+    this.checkIns.push(checkIn)
+
+    return checkIn
+  }
+
+  async save(checkIn: CheckIn): Promise<CheckIn> {
+    const checkInIndex = this.checkIns.findIndex(
+      (item) => item.id === checkIn.id,
+    )
+
+    if (checkInIndex !== -1) {
+      this.checkIns[checkInIndex] = checkIn
+    }
 
     return checkIn
   }
 
   async countByUserId(userId: string): Promise<number> {
-    return this.items.filter((checkIn) => checkIn.user_id === userId).length
+    return this.checkIns.filter((checkIn) => checkIn.user_id === userId).length
   }
+
+  async findById(id: string): Promise<CheckIn | null> {
+    return this.checkIns.find((item) => item.id === id) || null
+  }
+
   async findManyByUserId(userId: string, page: number): Promise<CheckIn[]> {
     const skip = (page - 1) * 20
     const take = skip + 20
-    return this.items
+    return this.checkIns
       .filter((checkIn) => checkIn.user_id === userId)
       .slice(skip, take)
   }
@@ -39,7 +56,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     const endOfTheDay = dayjs(date).endOf('date')
 
     return (
-      this.items.find((checkIn) => {
+      this.checkIns.find((checkIn) => {
         const checkInDate = dayjs(checkIn.created_at)
         const isOnSameDate =
           checkInDate.isAfter(startOfTheDay) &&
