@@ -3,7 +3,7 @@ import { app } from '@/app'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import createAndAuthenticateUser from '@/utils/test/create-and-authenticate-user'
 
-describe('Create Check-Ins (e2e)', () => {
+describe('Check-in History (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
   })
@@ -12,7 +12,7 @@ describe('Create Check-Ins (e2e)', () => {
     await app.close()
   })
 
-  it('should be able create a check-in', async () => {
+  it('should be able fetch check-ins history by user', async () => {
     const gymCreatePayload = {
       title: 'JavaScript Gym',
       description: 'A gym for JavaScript enthusiasts',
@@ -58,5 +58,22 @@ describe('Create Check-Ins (e2e)', () => {
       })
 
     expect(checkInResponse.statusCode).toEqual(201)
+
+    const checkInHistoryResponse = await request(app.server)
+      .get('/check-ins/history')
+      .set('Authorization', `Bearer ${token}`)
+      .send()
+
+    expect(checkInHistoryResponse.statusCode).toEqual(200)
+    expect(checkInHistoryResponse.body.checkIns).toHaveLength(1)
+    expect(checkInHistoryResponse.body.checkIns).toEqual([
+      expect.objectContaining({
+        id: expect.any(String),
+        gym_id: gymId,
+        user_id: expect.any(String),
+        validated_at: null,
+        created_at: expect.any(String),
+      }),
+    ])
   })
 })

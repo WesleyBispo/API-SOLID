@@ -7,11 +7,11 @@ export async function history(request: FastifyRequest, reply: FastifyReply) {
     page: z.coerce.number().min(1).default(1),
   })
 
-  const { page } = historyGymsQuerySchema.parse(request.body)
+  const { page } = historyGymsQuerySchema.parse(request.query)
 
   const fetchNearbyGymsUseCase = makeFetchUserCheckInsHistoryUseCase()
 
-  const checkIns = await fetchNearbyGymsUseCase.execute({
+  const { checkIns } = await fetchNearbyGymsUseCase.execute({
     userId: request.user.sub,
     page,
   })
