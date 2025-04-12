@@ -20,7 +20,7 @@ describe('Create Check-Ins (e2e)', () => {
       latitude: -23.5505,
       longitude: -46.6333,
     }
-    const { token } = await createAndAuthenticateUser(app)
+    const { token } = await createAndAuthenticateUser(app, 'ADMIN')
 
     const response = await request(app.server)
       .post('/gyms')
